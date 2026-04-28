@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 亚马逊运营能力测试系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+
+        .question-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .question-type {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .type-single {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .type-multiple {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .difficulty {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            color: #ffc107;
+            font-size: 18px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .option-item:hover {
+            background: #e9ecef;
+        }
+
+        .option-item.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .option-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option-item.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .option-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+        }
+
+        /* 结果页面 */
+        .result-score {
+            font-size: 72px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .result-rank {
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .result-desc {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .score-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .score-item-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .score-item-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #856404;
+        }
+
+        .result-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 24px;
+            }
+            
+            .score-breakdown {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 用户信息卡片 */
+        .user-info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info-item {
+            text-align: center;
+        }
+
+        .user-info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .user-info-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* 答案查看模式 */
+        .answer-mode .question-card {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 亚马逊运营能力测试系统</h1>
+            <p>30道精选题目，精准评测你的运营能力</p>
+        </header>
+
+        <!-- 首页：用户信息 -->
+        <div id="welcomePage" class="card">
+            <h2>👋 欢迎参加测试</h2>
+            <p style="margin-bottom: 25px; color: #666;">请填写以下信息，系统将根据你的经验匹配相应难度的题目</p>
+            
+            <div class="form-group">
+                <label>你的昵称</label>
+                <input type="text" id="nickname" placeholder="请输入你的昵称" autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label>运营经验年限</label>
+                <select id="experience">
+                    <option value="0">0-1年（入门级）</option>
+                    <option value="1">1-3年（基础级）</option>
+                    <option value="2">3-5年（进阶级）</option>
+                    <option value="3">5年以上（专家级）</option>
+                </select>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="startTest()">🚀 开始测试</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <span style="color: #999; font-size: 14px;">作者：</span>
+                <a href="https://www.xiaohongshu.com/user/profile/6098fef4000000000101d25b" 
+                   target="_blank" 
+                   style="color: #667eea; font-weight: 500; font-size: 14px; text-decoration: none;">
+                    shuo
+                </a>
+            </div>
+        </div>
+
+        <!-- 答题页面 -->
+        <div id="quizPage" class="hidden">
+            <div class="user-info-card">
+                <div class="user-info-item">
+                    <div class="user-info-label">考生</div>
+                    <div class="user-info-value" id="displayName">-</div>
+                </div>
+                <div class="user-info-item">
+                    <div class="user-info-label">当前题目</div>
+                    <div class="user-info-value"><span id="currentNum">1</span>/30</div>
+                </div>
+                <div class="user-info-item">
+                    <div class="user-info-label">答题进度</div>
+                    <div class="user-info-value" id="answeredCount">0/30</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+
+            <div id="questionContainer" class="card">
+                <!-- 题目将动态生成 -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">⬅️ 上一题</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">下一题 ➡️</button>
+                <button class="btn btn-primary hidden" id="submitBtn" onclick="submitQuiz()">✅ 提交答案</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="resultPage" class="hidden">
+            <div id="resultCard" class="card">
+                <h2 style="text-align: center;">🎉 测试完成！</h2>
+                <div class="result-score" id="finalScore">0</div>
+                <div class="result-rank" id="finalRank">运营新手</div>
+                <p class="result-desc" id="finalDesc">继续加油，你可以做得更好！</p>
+                
+                <div class="score-breakdown">
+                    <div class="score-item">
+                        <div class="score-item-label">单选题</div>
+                        <div class="score-item-value" id="singleScore">0/0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-item-label">多选题</div>
+                        <div class="score-item-value" id="multipleScore">0/0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-item-label">正确率</div>
+                        <div class="score-item-value" id="accuracyRate">0%</div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="showWrongAnswers()">❌ 查看错题</button>
+                    <button class="btn btn-primary" onclick="showAllAnswers()">📝 查看全部答案</button>
+                    <button class="btn btn-secondary" onclick="restartQuiz()">🔄 重新测试</button>
+                </div>
+            </div>
+
+            <!-- 答案详情 -->
+            <div id="answersDetail" class="hidden">
+                <div class="card">
+                    <h2 id="answersTitle">📋 答案详情</h2>
+                    <div id="answersContainer" class="answer-mode">
+                        <!-- 答案详情将动态生成 -->
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="hideAnswers()">⬅️ 返回结果</button>
+                    <button class="btn btn-primary" onclick="restartQuiz()">🔄 重新测试</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 题库数据 ====================
+        const questionBank = {
+            1: [ // ⭐ 入门级
+                { id: 1, type: 'single', difficulty: 1, text: '以下哪个是亚马逊的核心算法名称？', options: ['Google算法', 'A9算法', 'Bing算法', 'Baidu算法'], answer: 1, explanation: 'A9是亚马逊的核心搜索和排名算法，负责产品排序和推荐。' },
+                { id: 2, type: 'single', difficulty: 1, text: 'ACOS的计算公式是？', options: ['广告花费 ÷ 广告销售额 × 100%', '广告销售额 ÷ 广告花费 × 100%', '点击量 ÷ 曝光量 × 100%', '订单量 ÷ 点击量 × 100%'], answer: 0, explanation: 'ACOS（Advertising Cost of Sale）= 广告花费 / 广告销售额，是衡量广告盈利能力的核心指标。' },
+                { id: 3, type: 'single', difficulty: 1, text: 'CTR指的是什么？', options: ['转化率', '点击率', '曝光率', '跳出率'], answer: 1, explanation: 'CTR（Click Through Rate）= 点击量 / 曝光量，衡量广告吸引力的重要指标。' },
+                { id: 4, type: 'single', difficulty: 1, text: 'CVR指的是什么？', options: ['点击率', '转化率', '客单价', '复购率'], answer: 1, explanation: 'CVR（Conversion Rate）= 订单量 / 点击量，衡量Listing转化能力的核心指标。' },
+                { id: 5, type: 'single', difficulty: 1, text: 'BSR是什么意思？', options: ['广告排名', '热销卖家排名', '关键词排名', '店铺评分'], answer: 1, explanation: 'BSR（Best Seller Rank）是亚马逊类目热销排名，反映产品在同类目中的销售表现。' },
+                { id: 6, type: 'single', difficulty: 1, text: '以下哪个不是亚马逊广告类型？', options: ['SP（商品推广）', 'SB（品牌推广）', 'SD（展示型推广）', 'SG（社交推广）'], answer: 3, explanation: '亚马逊三大广告类型是SP、SB、SD，没有SG社交推广。' },
+                { id: 7, type: 'single', difficulty: 1, text: 'FBA指的是什么？', options: ['卖家自发货', '亚马逊配送', '第三方物流', '虚拟仓发货'], answer: 1, explanation: 'FBA（Fulfillment by Amazon）是亚马逊代发货服务，由亚马逊负责仓储、配送、客服等。' },
+                { id: 8, type: 'single', difficulty: 1, text: 'Listing的五大要素不包括以下哪项？', options: ['标题', '图片', '五点描述', '店铺名称'], answer: 3, explanation: 'Listing五大要素是：标题、图片、五点描述、产品描述、A+页面。' },
+                { id: 9, type: 'single', difficulty: 1, text: '亚马逊Review的星级最低是几颗星？', options: ['1星', '2星', '3星', '0星'], answer: 0, explanation: '亚马逊Review星级范围是1-5星，1星最差，5星最好。' },
+                { id: 10, type: 'single', difficulty: 1, text: '新品上架后，首先应该开启哪种广告？', options: ['手动精准广告', '自动广告', '品牌广告', '展示广告'], answer: 1, explanation: '新品期没有数据积累，应先开自动广告跑数据，收集关键词和竞品信息。' },
+            ],
+            2: [ // ⭐⭐ 基础级
+                { id: 101, type: 'single', difficulty: 2, text: '自动广告的主要作用不包括？', options: ['跑关键词数据', '发现竞品机会', '精准控制单个词出价', '扩大覆盖面'], answer: 2, explanation: '精准控制单个词出价是手动广告的优势，自动广告无法单独调整某个词的出价。' },
+                { id: 102, type: 'single', difficulty: 2, text: '手动广告中，以下哪种匹配方式范围最广？', options: ['精准匹配', '词组匹配', '广泛匹配', '否定匹配'], answer: 2, explanation: '匹配范围从大到小：广泛匹配 > 词组匹配 > 精准匹配。' },
+                { id: 103, type: 'single', difficulty: 2, text: '以下哪种关键词的竞争度通常最高？', options: ['长尾关键词', '核心大词', '品牌关键词', '竞品关键词'], answer: 1, explanation: '核心大词搜索量最大，竞争也最激烈，出价通常很高。' },
+                { id: 104, type: 'single', difficulty: 2, text: 'Listing优化的核心是？', options: ['堆砌关键词', '提高转化率', '让图片更美', '写更长的标题'], answer: 1, explanation: '所有优化最终都是为了提高转化率，转化率是A9算法最看重的指标。' },
+                { id: 105, type: 'single', difficulty: 2, text: '以下哪个因素对Buy Box影响最小？', options: ['价格', '配送方式', '卖家评分', '店铺装修'], answer: 3, explanation: 'Buy Box主要影响因素：价格、配送方式、库存、卖家绩效，与店铺装修无关。' },
+                { id: 106, type: 'single', difficulty: 2, text: '亚马逊A+页面的主要作用是？', options: ['提高关键词排名', '增强品牌形象，提高转化率', '降低广告成本', '增加Review数量'], answer: 1, explanation: 'A+页面通过图文结合的方式展示产品，提升品牌形象和用户购买意愿，直接影响转化率。' },
+                { id: 107, type: 'single', difficulty: 2, text: '库存周转率的计算公式是？', options: ['销售成本 ÷ 平均库存价值', '库存数量 ÷ 日销量', '库存价值 ÷ 月销售额', '采购数量 ÷ 销售数量'], answer: 0, explanation: '库存周转率=销售成本/平均库存，衡量库存周转速度，越高说明资金利用效率越好。' },
+                { id: 108, type: 'single', difficulty: 2, text: '产品图片的主图背景要求是？', options: ['白色背景', '黑色背景', '彩色背景', '任意背景'], answer: 0, explanation: '亚马逊主图要求纯白背景（RGB: 255, 255, 255），产品占图片85%以上。' },
+                { id: 109, type: 'single', difficulty: 2, text: '产品标题的推荐长度是？', options: ['50字符以内', '100-150字符', '200-250字符', '越长越好'], answer: 2, explanation: '亚马逊标题推荐控制在200-250字符之间，既包含足够关键词，又不会被截断。' },
+                { id: 110, type: 'single', difficulty: 2, text: 'ODR（订单缺陷率）的合格标准是？', options: ['< 1%', '< 2%', '< 5%', '< 10%'], answer: 0, explanation: '订单缺陷率需要保持在1%以下，超过可能导致账号被审核或暂停。' },
+            ],
+            3: [ // ⭐⭐⭐ 进阶级
+                { id: 201, type: 'single', difficulty: 3, text: 'SD展示型广告中，VCPM竞价模式适合以下哪种目标？', options: ['追求转化', '追求点击', '品牌曝光/进攻竞品', '控制ACOS'], answer: 2, explanation: 'VCPM按千次曝光计费，不计点击和转化，适合做品牌曝光或抢占竞品详情页位置。' },
+                { id: 202, type: 'single', difficulty: 3, text: '以下哪种广告位置的转化率通常最高？', options: ['搜索结果首页顶部', '搜索结果首页中部', '竞品详情页', '分类页面'], answer: 0, explanation: '搜索结果首页顶部位置最显眼，用户购买意图最强，通常转化率最高。' },
+                { id: 203, type: 'single', difficulty: 3, text: '以下哪个指标可以直接判断一个关键词是否值得继续投放？', options: ['CTR > 0.5%', 'CVR > 10%', '订单数 > 10', '带来的利润 > 广告花费'], answer: 3, explanation: '要看投入产出比，而不是单一指标。需要计算该关键词带来的总利润是否大于广告花费。' },
+                { id: 204, type: 'single', difficulty: 3, text: '断货后，以下哪种补救措施效果最好？', options: ['大幅降价', '加大广告预算', '跟卖自己的Listing，用自发货维持链接活性', '疯狂上Review'], answer: 2, explanation: '断货后最关键是保持链接活性，用自发货跟卖可以让链接保持在售状态，减少排名损失。' },
+                { id: 205, type: 'single', difficulty: 3, text: '以下哪种差异化策略护城河最深？', options: ['价格更低', '包装更好', '专利保护的功能创新', '图片更精美'], answer: 2, explanation: '专利保护的创新最难被复制，护城河最深；价格、包装、图片都很容易被模仿。' },
+                { id: 206, type: 'single', difficulty: 3, text: 'A9算法中，以下哪个因素权重最高？', options: ['关键词埋词数量', '转化率', 'Review数量', '评分星级'], answer: 1, explanation: '转化率是A9算法的灵魂，亚马逊的核心目标是"让来的人都买到东西"。' },
+                { id: 207, type: 'single', difficulty: 3, text: '以下哪种情况最可能触发亚马逊机审？', options: ['产品价格上调10%', '订单量突然从日均5单涨到50单', '更新了产品主图', '增加了一个变体'], answer: 1, explanation: '订单异常波动是最容易触发机审的，亚马逊会怀疑你在操纵排名。' },
+                { id: 208, type: 'single', difficulty: 3, text: '关于否定关键词，以下说法正确的是？', options: ['只要不相关就否定精准', '否定词组比否定精准更安全', '大词一定要否定', '否定后就不能再启用'], answer: 1, explanation: '否定词组会过滤掉包含该词组的所有搜索，否定精准只过滤精确匹配，新手用否定词组更安全。' },
+                { id: 209, type: 'single', difficulty: 3, text: '以下哪种情况最应该做否定关键词？', options: ['曝光1000，点击2，0订单', '花费$50，0订单', 'ACOS 50%，产品毛利率40%', '以上都应该否定'], answer: 1, explanation: '高花费0转化是最优先否定的，这是确定的赔钱词；A可能只是点击不够，C接近盈亏线可以再观察。' },
+                { id: 210, type: 'single', difficulty: 3, text: 'Listing标题中，最重要的关键词应该放在哪里？', options: ['标题最前面', '标题中间', '标题最后面', '哪里都一样'], answer: 0, explanation: '标题权重是前高后低，核心关键词放在前面获得的权重最高。' },
+            ],
+            4: [ // ⭐⭐⭐⭐ 高级
+                { id: 301, type: 'single', difficulty: 4, text: '关于广告归因，亚马逊的归因窗口是？', options: ['7天', '14天', '30天', '点击后14天，浏览后30天'], answer: 0, explanation: '亚马逊广告默认归因窗口是点击后14天，但后台报表通常显示7天归因数据。' },
+                { id: 302, type: 'single', difficulty: 4, text: '以下哪种广告策略最适合攻防竞品？', options: ['SP商品推广', 'SB品牌推广', 'SD展示型推广（商品定向）', 'SBV视频广告'], answer: 2, explanation: 'SD展示型推广可以直接定向到竞品ASIN，在竞品详情页展示你的产品，是最直接的攻防工具。' },
+                { id: 303, type: 'single', difficulty: 4, text: '关于关键词卡位，以下说法正确的是？', options: ['出价越高，位置一定越好', '卡位需要综合考虑出价、转化率、历史表现', '卡位只要守住首页顶部就行', '卡位后就不用管了'], answer: 1, explanation: '广告位置=出价×质量得分，质量得分包括点击率、转化率、历史表现等，不是单纯出价决定的。' },
+                { id: 304, type: 'single', difficulty: 4, text: '以下哪种情况最可能是Listing被降权？', options: ['订单减少但BSR没变', '广告花费上涨', '搜索品牌名+产品名都搜不到自己的Listing', 'Review星级下降'], answer: 2, explanation: '搜索完整品牌+产品名都搜不到，基本可以确定是被降权或隐形了。' },
+                { id: 305, type: 'single', difficulty: 4, text: '以下哪种选品策略风险最低？', options: ['抄爆款，价格比别人低20%', '微创新，解决现有产品1-2个痛点', '全新品类，做第一个吃螃蟹的人', '多SKU铺货，东方不亮西方亮'], answer: 1, explanation: '微创新风险最低，有市场验证，又有差异化，不会陷入纯价格战。' },
+                { id: 306, type: 'single', difficulty: 4, text: '关于A/B测试，以下说法正确的是？', options: ['同时测试多个变量，效率高', '一次只测试一个变量，数据才可信', '测试3天就够了', '凭感觉判断哪个好'], answer: 1, explanation: 'A/B测试的黄金原则是单一变量，否则不知道是什么因素影响的结果，测试周期建议1-2周。' },
+                { id: 307, type: 'single', difficulty: 4, text: '关于飞鱼模式（铺货模式）和精品模式，以下说法正确的是？', options: ['铺货模式已经完全过时了', '精品模式适合资金少的卖家', '两种模式都有成功的可能，看资源匹配', '精品模式一定比铺货模式好'], answer: 2, explanation: '没有绝对的好坏，精品需要资金和供应链，铺货需要ERP和运营效率，适合自己的才最好。' },
+                { id: 308, type: 'single', difficulty: 4, text: '以下哪种情况，即使产品不赚钱也应该继续卖？', options: ['这个产品是流量款，带动其他产品销售', '这个产品清库存回本', '这个产品沉淀客户数据', '以上都是'], answer: 3, explanation: '产品不一定要每个都赚钱，有的是流量款，有的是利润款，有的是清库存，战略定位不同。' },
+                { id: 309, type: 'single', difficulty: 4, text: '高级广告架构的核心是？', options: ['所有关键词放一个广告组', '分层管理：爆款词→潜力词→测试词', '出价越低越好', '预算平均分配'], answer: 1, explanation: '科学的广告架构是分层管理，不同表现的词给不同预算和策略。' },
+                { id: 310, type: 'single', difficulty: 4, text: '关于自然流量和广告流量的关系，以下说法正确的是？', options: ['广告打得多，自然流量一定涨', '广告带来的转化会提升关键词排名，带来自然流量', '有自然流量就可以关掉广告', '自然流量和广告流量是互斥的'], answer: 1, explanation: '广告是催化剂，转化才是自然排名的燃料；自然流量起来后可以减少对广告的依赖，但通常不会完全关掉广告。' },
+            ],
+            5: [ // ⭐⭐⭐⭐⭐ 专家级
+                { id: 401, type: 'single', difficulty: 5, text: '关于A9算法的"权重衰减机制"，以下说法正确的是？', options: ['越早期的销量权重越高', '越近期的销量权重越高', '历史销量权重不变', '销量只计数，不计时间'], answer: 1, explanation: 'A9算法是时间加权的，最近7天 > 最近14天 > 最近30天，越近期的数据权重越高。' },
+                { id: 402, type: 'single', difficulty: 5, text: '以下哪种广告架构是最优的？', options: ['一个Campaign放所有关键词', '每个关键词单独一个Campaign', '按词的类型（广泛/词组/精准）分Campaign', '按词的表现分层架构：爆款词→潜力词→测试词'], answer: 3, explanation: '分层架构最科学，爆款词给足预算重点守护，潜力词观察优化，测试词低预算持续探测。' },
+                { id: 403, type: 'single', difficulty: 5, text: '关于亚马逊飞轮理论，以下哪个环节是起点？', options: ['更低价格 → 更多买家', '更多买家 → 更多卖家', '更多卖家 → 更丰富选品', '更丰富选品 → 更好用户体验'], answer: 0, explanation: '亚马逊飞轮的起点是"更低价格吸引更多买家"，然后形成正循环。' },
+                { id: 404, type: 'single', difficulty: 5, text: '关于Review的置顶，以下说法正确的是？', options: ['最新的Review会置顶', '点赞（Helpful）多的Review更容易置顶', '五星好评一定在前面', '卖家可以控制哪个Review置顶'], answer: 1, explanation: 'Helpful投票多的Review权重更高，更容易置顶，不管是好评还是差评。' },
+                { id: 405, type: 'single', difficulty: 5, text: '关于产品生命周期管理，成熟期的核心策略是？', options: ['冲销量不计成本', '稳定盈利，防守竞品', '清库存退市', '加大创新'], answer: 1, explanation: '成熟期竞争激烈，核心是守住排名、稳定利润、防御竞品进攻，同时为下一代产品做准备。' },
+                { id: 406, type: 'single', difficulty: 5, text: '关于多账号运营，以下说法正确的是？', options: ['完全隔离是最好的防关联策略', '可以互相跟卖刷销量', '账号越多越好', '用同一个收款账号没问题'], answer: 0, explanation: '防关联的核心是"物理隔离"：不同资料、不同IP、不同设备、不同收款方式，不要交叉操作。' },
+                { id: 407, type: 'single', difficulty: 5, text: '建立品牌护城河的核心是？', options: ['价格更低', '更多的广告投放', '专利保护+用户心智+产品创新', '更多的SKU'], answer: 2, explanation: '真正的品牌护城河是法律保护+用户心智+产品创新+服务体验的综合。' },
+                { id: 408, type: 'single', difficulty: 5, text: '以下哪种情况，即使ACOS很高也不应该关停广告？', options: ['新品期冲排名', '该广告带来了大量自然单', '该广告的客户有复购', '以上都是'], answer: 3, explanation: 'ACOS不是唯一判断标准，还要看广告带来的长尾价值：自然排名提升、品牌曝光、复购客户等。' },
+                { id: 409, type: 'single', difficulty: 5, text: '关于Review权重，以下哪个最高？', options: ['VP带图带视频长评', 'VP纯文字评价', '非VP评价', '直评'], answer: 0, explanation: '权重排序：VP带图带视频长评 > VP带图 > VP纯文字 > 非VP > 直评。' },
+                { id: 410, type: 'single', difficulty: 5, text: '关于产品矩阵策略，以下说法正确的是？', options: ['所有产品都要是利润款', '应该有流量款、利润款、高端款、防御款等不同定位', '产品越多越好', '专注一个产品就够了'], answer: 1, explanation: '健康的产品矩阵应该有不同定位的产品互相配合，形成组合拳，抗风险能力更强。' },
+            ]
+        };
+
+        // ==================== 多选题数据 ====================
+        const multipleQuestions = {
+            1: [ // 入门级多选
+                { id: 51, type: 'multiple', difficulty: 1, text: '以下哪些是亚马逊广告的投放方式？', options: ['自动广告', '手动广告', '展示广告', '社交媒体广告', '品牌广告'], answer: [0, 1, 2, 4], explanation: '亚马逊广告主要包括SP（自动/手动）、SB品牌广告、SD展示广告。' },
+                { id: 52, type: 'multiple', difficulty: 1, text: '以下哪些指标越高越好？', options: ['CTR', 'CVR', 'ACOS', 'ROAS', 'BSR数字'], answer: [0, 1, 3], explanation: 'CTR点击率、CVR转化率、ROAS投入产出比越高越好；ACOS越低越好，BSR数字越小越好。' },
+                { id: 53, type: 'multiple', difficulty: 1, text: '以下哪些是Listing的组成部分？', options: ['标题（Title）', '图片（Images）', '五点描述（Bullet Points）', '产品描述（Description）', '店铺名称'], answer: [0, 1, 2, 3], explanation: 'Listing的核心组成包括标题、图片、五点描述、产品描述、A+页面等。' },
+                { id: 54, type: 'multiple', difficulty: 1, text: '以下哪些是FBA的优点？', options: ['获得Prime标识', '提高Buy Box几率', '亚马逊负责客服', '配送速度快', '成本更低'], answer: [0, 1, 2, 3], explanation: 'FBA的优势是Prime标识、Buy Box优势、亚马逊客服、快速配送，但成本通常比自发货高。' },
+                { id: 55, type: 'multiple', difficulty: 1, text: '以下哪些会影响Buy Box？', options: ['价格', '配送方式', '卖家评分', '库存状况', '店铺装修'], answer: [0, 1, 2, 3], explanation: 'Buy Box主要影响因素：价格、配送方式、库存、卖家绩效，与店铺装修无关。' },
+            ],
+            2: [ // 基础级多选
+                { id: 151, type: 'multiple', difficulty: 2, text: '手动广告的关键词分层策略包括？', options: ['爆款词：单独广告组，精准匹配，高预算', '潜力词：词组匹配，中等预算', '测试词：广泛匹配，低预算', '所有词放一个广告组，方便管理', '否定关键词池：过滤垃圾词'], answer: [0, 1, 2, 4], explanation: '科学的广告架构是分层管理，不同表现的词给不同预算和匹配方式。' },
+                { id: 152, type: 'multiple', difficulty: 2, text: '优化Listing图片应该考虑哪些因素？', options: ['主图纯白底合规', '场景图展示使用场景', '细节图展示产品特点', '对比图突出优势', '图片越多越好'], answer: [0, 1, 2, 3], explanation: '图片质量比数量重要，主图要合规，附图要从不同角度展示产品价值。' },
+                { id: 153, type: 'multiple', difficulty: 2, text: '以下哪些是提高转化率的有效方法？', options: ['优化主图', '设置有吸引力的价格', '积累高质量Review', '使用A+页面', '疯狂降价'], answer: [0, 1, 2, 3], explanation: '提高转化是综合优化的结果，但靠降价不是健康的长期策略。' },
+                { id: 154, type: 'multiple', difficulty: 2, text: '以下哪些是选品时的红牌警告？', options: ['头部卖家垄断，Review几千+', '亚马逊自营占比很高', '退货率高且难以解决', '需要很多认证且成本高', '利润空间大'], answer: [0, 1, 2, 3], explanation: '垄断、高退货、复杂认证、亚马逊自营都是高风险信号，利润大是好事不是红牌。' },
+                { id: 155, type: 'multiple', difficulty: 2, text: '供应链管理的要点包括？', options: ['至少2-3家供应商备份', '验厂确认供应商实力', '签订合同保障权益', '质量抽检', '只找最便宜的供应商'], answer: [0, 1, 2, 3], explanation: '供应链要找可靠的，不能只看价格，要有备份、保质量、控风险。' },
+            ],
+            3: [ // 进阶级多选
+                { id: 251, type: 'multiple', difficulty: 3, text: '优化ACOS可以从哪些方面入手？', options: ['否掉高花费0转化的词', '降低高ACOS词的出价', '优化Listing提高转化率', '提高产品价格', '把所有出价砍一半'], answer: [0, 1, 2, 3], explanation: '优化ACOS是系统工程，要从选词、出价、转化、定价多方面优化，不能简单粗暴降价。' },
+                { id: 252, type: 'multiple', difficulty: 3, text: '以下哪些是Listing被降权的信号？', options: ['关键词排名大幅下降', '同样出价下广告曝光锐减', '订单量减少但BSR没变', '搜品牌+产品名都搜不到', 'Review星级下降'], answer: [0, 1, 3], explanation: '排名暴跌、曝光锐减、搜不到自己，都是降权信号；订单减少但BSR没变说明是整体类目下滑。' },
+                { id: 253, type: 'multiple', difficulty: 3, text: '产品差异化可以从哪些方面入手？', options: ['功能改进（解决竞品痛点）', '材质升级', '包装差异化', '组合销售', '价格更低'], answer: [0, 1, 2, 3], explanation: '真正的差异化是产品层面的，价格低不是差异化，是同质化竞争。' },
+                { id: 254, type: 'multiple', difficulty: 3, text: 'Review获取的合法方式包括？', options: ['Vine计划', '早期评论人计划', '站内信邀评', '花钱买评', '送测换评'], answer: [0, 1, 2], explanation: 'Vine、早期评论人、站内邀评是合规的获取Review方式，花钱买评和送测都是违规的。' },
+                { id: 255, type: 'multiple', difficulty: 3, text: '以下哪些是关键词的可靠来源？', options: ['自动广告报告', 'Brand Analytics', '竞品Listing', '亚马逊前台搜索下拉框', '自己拍脑袋想'], answer: [0, 1, 2, 3], explanation: '关键词应该从数据中获取，自动广告、品牌分析、竞品、搜索框都是可靠来源。' },
+            ],
+            4: [ // 高级多选
+                { id: 351, type: 'multiple', difficulty: 4, text: '以下哪些是亚马逊飞轮理论的环节？', options: ['更低价格吸引更多买家', '更多买家吸引更多卖家', '更多卖家带来更丰富选品', '更丰富选品提升用户体验', '更多广告收入'], answer: [0, 1, 2, 3], explanation: '亚马逊飞轮的核心是"更好的体验→更多流量→更多卖家→更好的体验"的正向循环。' },
+                { id: 352, type: 'multiple', difficulty: 4, text: '高级广告架构包括哪些部分？', options: ['自动广告组（跑词探测）', '广泛匹配组（拓词）', '词组匹配组（扩流）', '精准匹配组（卡位转化）', '否定关键词池（过滤垃圾）'], answer: [0, 1, 2, 3, 4], explanation: '完整的广告漏斗应该从探测→拓词→扩流→转化，配合否定词池过滤垃圾流量。' },
+                { id: 353, type: 'multiple', difficulty: 4, text: '关于自然流量和广告流量的关系，以下说法正确的是？', options: ['广告打得多，自然流量一定涨', '广告带来的转化会提升关键词排名，带来自然流量', '自然排名上去后，可以逐步降低广告预算', '自然流量和广告流量是互补的，不是替代的', '有自然流量就可以关掉广告'], answer: [1, 2, 3], explanation: '广告是催化剂，转化才是自然排名的燃料；自然流量起来后可以减少对广告的依赖，但通常不会完全关掉广告。' },
+                { id: 354, type: 'multiple', difficulty: 4, text: '以下哪些会导致账号被封？', options: ['侵权投诉过多', 'ODR超过1%', '刷单操纵排名', '关联被封账号', '销量太高'], answer: [0, 1, 2, 3], explanation: '侵权、绩效不达标、违规操作、账号关联都可能导致封号。' },
+                { id: 355, type: 'multiple', difficulty: 4, text: '以下哪些是欧洲站需要的合规要求？', options: ['VAT增值税', '包装法', 'WEEE电子回收', '电池法', 'GDPR数据保护'], answer: [0, 1, 2, 3, 4], explanation: '欧洲站需要VAT、包装法、WEEE、电池法、GDPR等多项合规。' },
+            ],
+            5: [ // 专家级多选
+                { id: 451, type: 'multiple', difficulty: 5, text: '从0到1打造爆款的正确步骤包括？', options: ['选品：数据分析+验证，选对赛道', '上架：基础优化做到位，不着急推广', '启动：积累基础Review，开启广告跑数据', '放量：重点词卡位，Deal配合冲排名', '稳定：守住排名，优化利润，同时准备下一代产品'], answer: [0, 1, 2, 3, 4], explanation: '打造爆款是有方法论的系统工程，不是靠运气，每个环节都要做好。' },
+                { id: 452, type: 'multiple', difficulty: 5, text: '建立品牌护城河的方法包括？', options: ['注册商标和专利', '建立品牌认知和粉丝群体', '持续产品创新', '优秀的用户体验和售后', '只靠低价竞争'], answer: [0, 1, 2, 3], explanation: '真正的品牌护城河是法律保护+用户心智+产品创新+服务体验的综合。' },
+                { id: 453, type: 'multiple', difficulty: 5, text: '产品矩阵策略应该包含哪些定位？', options: ['流量款：引流获客', '利润款：主要盈利', '高端款：树立品牌形象', '防御款：对标竞品', '清库存款：回笼资金'], answer: [0, 1, 2, 3, 4], explanation: '健康的产品矩阵应该有不同定位的产品互相配合，形成组合拳，抗风险能力更强。' },
+                { id: 454, type: 'multiple', difficulty: 5, text: '以下哪些是SD展示广告的定向方式？', options: ['特定商品ASIN', '特定类目', '特定人群（浏览过/购买过）', '特定关键词', '特定网站'], answer: [0, 1, 2], explanation: 'SD展示广告可以定向商品、类目、人群，但不是关键词或站外网站。' },
+                { id: 455, type: 'multiple', difficulty: 5, text: '以下哪些说法是正确的？', options: ['ACOS不是判断广告好坏的唯一标准', '新品期应该更关注转化和排名，而不是ACOS', '长尾词的ACOS一定比大词低', '品牌备案后可以使用更多高级工具', '跟卖永远是最好的赚钱方式'], answer: [0, 1, 3], explanation: 'ACOS需要结合产品生命周期看，新品期可以高一些；长尾词不一定ACOS就低；跟卖风险很高，不建议作为长期策略。' },
+            ]
+        };
+
+        // ==================== 全局变量 ====================
+        let currentUser = { name: '', experience: 0 };
+        let selectedQuestions = [];
+        let userAnswers = {}; // { questionId: [selectedIndexes] }
+        let currentQuestionIndex = 0;
+        let testResults = null;
+
+        // ==================== 难度权重配置 ====================
+        const difficultyWeights = {
+            1: 1,    // ⭐ 入门级：1分
+            2: 1.5,  // ⭐⭐ 基础级：1.5分
+            3: 2,    // ⭐⭐⭐ 进阶级：2分
+            4: 2.5,  // ⭐⭐⭐⭐ 高级：2.5分
+            5: 3     // ⭐⭐⭐⭐⭐ 专家级：3分
+        };
+
+        const experienceDistribution = {
+            0: { 1: 15, 2: 10, 3: 5, 4: 0, 5: 0 },   // 0-1年：15道⭐ + 10道⭐⭐ + 5道⭐⭐⭐
+            1: { 1: 5, 2: 12, 3: 10, 4: 3, 5: 0 },    // 1-3年：5 + 12 + 10 + 3
+            2: { 1: 2, 2: 5, 3: 12, 4: 8, 5: 3 },     // 3-5年：2 + 5 + 12 + 8 + 3
+            3: { 1: 0, 2: 3, 3: 7, 4: 12, 5: 8 }      // 5年以上：3 + 7 + 12 + 8
+        };
+
+        // ==================== 核心功能函数 ====================
+        
+        // 开始测试
+        function startTest() {
+            const name = document.getElementById('nickname').value.trim();
+            if (!name) {
+                alert('请输入你的昵称！');
+                return;
+            }
+            
+            currentUser.name = name;
+            currentUser.experience = parseInt(document.getElementById('experience').value);
+            
+            // 生成题目
+            generateQuestions();
+            
+            // 切换页面
+            document.getElementById('welcomePage').classList.add('hidden');
+            document.getElementById('quizPage').classList.remove('hidden');
+            document.getElementById('displayName').textContent = name;
+            
+            // 显示第一题
+            showQuestion(0);
+            updateProgress();
+        }
+
+        // 根据经验生成题目
+        function generateQuestions() {
+            selectedQuestions = [];
+            const distribution = experienceDistribution[currentUser.experience];
+            
+            // 按难度选题
+            for (let difficulty = 1; difficulty <= 5; difficulty++) {
+                const count = distribution[difficulty] || 0;
+                if (count > 0) {
+                    const singleQ = questionBank[difficulty] || [];
+                    const multiQ = multipleQuestions[difficulty] || [];
+                    const allQ = [...singleQ, ...multiQ];
+                    
+                    // 随机选择
+                    const shuffled = shuffleArray([...allQ]);
+                    const selected = shuffled.slice(0, Math.min(count, shuffled.length));
+                    selectedQuestions.push(...selected);
+                }
+            }
+            
+            // 打乱题目顺序
+            selectedQuestions = shuffleArray(selectedQuestions);
+            
+            // 确保总共30题（如果不足，用低难度题目补充）
+            if (selectedQuestions.length < 30) {
+                const allEasy = [...questionBank[1], ...questionBank[2], ...multipleQuestions[1], ...multipleQuestions[2]];
+                const shuffled = shuffleArray(allEasy);
+                const needed = 30 - selectedQuestions.length;
+                const existingIds = new Set(selectedQuestions.map(q => q.id));
+                
+                for (let q of shuffled) {
+                    if (selectedQuestions.length >= 30) break;
+                    if (!existingIds.has(q.id)) {
+                        selectedQuestions.push(q);
+                        existingIds.add(q.id);
+                    }
+                }
+            }
+            
+            // 打乱最终顺序
+            selectedQuestions = shuffleArray(selectedQuestions).slice(0, 30);
+            
+            // 初始化用户答案
+            userAnswers = {};
+            selectedQuestions.forEach((q, index) => {
+                userAnswers[index] = [];
+            });
+        }
+
+        // 数组洗牌
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // 显示题目
+        function showQuestion(index) {
+            currentQuestionIndex = index;
+            const question = selectedQuestions[index];
+            const container = document.getElementById('questionContainer');
+            
+            const typeClass = question.type === 'single' ? 'type-single' : 'type-multiple';
+            const typeText = question.type === 'single' ? '单选题' : '多选题（选多个）';
+            const stars = '⭐'.repeat(question.difficulty);
+            const inputType = question.type === 'single' ? 'radio' : 'checkbox';
+            
+            let optionsHtml = '';
+            question.options.forEach((option, optIndex) => {
+                const isSelected = userAnswers[index] && userAnswers[index].includes(optIndex);
+                const letter = String.fromCharCode(65 + optIndex); // A, B, C, D...
+                optionsHtml += `
+                    <div class="option-item ${isSelected ? 'selected' : ''}" onclick="toggleOption(${index}, ${optIndex}, '${question.type}')">
+                        <input type="${inputType}" class="option-input" ${isSelected ? 'checked' : ''} name="q${index}">
+                        <span class="option-text">${letter}. ${option}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = `
+                <div class="question-info">
+                    <span class="question-type ${typeClass}">${typeText}</span>
+                    <span class="difficulty">${stars.split('').map(s => `<span class="star">${s}</span>`).join('')}</span>
+                </div>
+                <div class="question-text">${index + 1}. ${question.text}</div>
+                <div class="options-list">
+                    ${optionsHtml}
+                </div>
+            `;
+            
+            // 更新导航按钮
+            document.getElementById('prevBtn').style.visibility = index === 0 ? 'hidden' : 'visible';
+            
+            const isLastQuestion = index === selectedQuestions.length - 1;
+            document.getElementById('nextBtn').classList.toggle('hidden', isLastQuestion);
+            document.getElementById('submitBtn').classList.toggle('hidden', !isLastQuestion);
+        }
+
+        // 切换选项
+        function toggleOption(questionIndex, optionIndex, type) {
+            if (type === 'single') {
+                // 单选：替换答案
+                userAnswers[questionIndex] = [optionIndex];
+            } else {
+                // 多选：添加或移除
+                if (!userAnswers[questionIndex]) {
+                    userAnswers[questionIndex] = [];
+                }
+                const idx = userAnswers[questionIndex].indexOf(optionIndex);
+                if (idx > -1) {
+                    userAnswers[questionIndex].splice(idx, 1);
+                } else {
+                    userAnswers[questionIndex].push(optionIndex);
+                }
+            }
+            
+            // 更新UI
+            showQuestion(questionIndex);
+            updateProgress();
+        }
+
+        // 更新进度
+        function updateProgress() {
+            const answered = Object.values(userAnswers).filter(a => a && a.length > 0).length;
+            const total = selectedQuestions.length;
+            const progress = (answered / total) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentNum').textContent = currentQuestionIndex + 1;
+            document.getElementById('answeredCount').textContent = `${answered}/${total}`;
+        }
+
+        // 上一题
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                showQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                showQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        // 提交测试
+        function submitQuiz() {
+            // 检查是否所有题目都答了
+            const unanswered = Object.values(userAnswers).filter(a => !a || a.length === 0).length;
+            if (unanswered > 0) {
+                if (!confirm(`还有 ${unanswered} 道题未作答，确定要提交吗？`)) {
+                    return;
+                }
+            }
+            
+            // 计算分数
+            calculateResults();
+            
+            // 显示结果
+            showResults();
+        }
+
+        // 计算结果
+        function calculateResults() {
+            let totalScore = 0;
+            let maxScore = 0;
+            let singleCorrect = 0;
+            let singleTotal = 0;
+            let multipleCorrect = 0;
+            let multipleTotal = 0;
+            let wrongAnswers = [];
+            
+            selectedQuestions.forEach((question, index) => {
+                const weight = difficultyWeights[question.difficulty];
+                maxScore += weight;
+                
+                const userAnswer = userAnswers[index] || [];
+                const correctAnswer = question.answer;
+                let isCorrect = false;
+                
+                if (question.type === 'single') {
+                    isCorrect = userAnswer.length === 1 && userAnswer[0] === correctAnswer;
+                    singleTotal++;
+                    if (isCorrect) singleCorrect++;
+                } else {
+                    // 多选题：所有选项都选对才算对
+                    const sortedUser = [...userAnswer].sort().join(',');
+                    const sortedCorrect = [...correctAnswer].sort().join(',');
+                    isCorrect = sortedUser === sortedCorrect;
+                    multipleTotal++;
+                    if (isCorrect) multipleCorrect++;
+                }
+                
+                if (isCorrect) {
+                    totalScore += weight;
+                } else {
+                    wrongAnswers.push({
+                        question,
+                        index,
+                        userAnswer,
+                        correctAnswer
+                    });
+                }
+            });
+            
+            // 计算百分制分数
+            const percentage = Math.round((totalScore / maxScore) * 100);
+            
+            // 评级
+            let rank, desc;
+            if (percentage >= 90) {
+                rank = 'S级 - 运营专家';
+                desc = '太棒了！你的运营能力已达到专家水平，可以独立负责百万级项目！';
+            } else if (percentage >= 80) {
+                rank = 'A级 - 高级运营';
+                desc = '优秀！你对亚马逊运营有深入理解，基础扎实，实战经验丰富！';
+            } else if (percentage >= 70) {
+                rank = 'B级 - 中级运营';
+                desc = '不错！你有一定的运营经验，但还有提升空间，继续加油！';
+            } else if (percentage >= 60) {
+                rank = 'C级 - 初级运营';
+                desc = '及格了！你的基础概念掌握不错，但还需要更多实战经验积累。';
+            } else {
+                rank = 'D级 - 入门级';
+                desc = '继续加油！建议系统学习基础概念，多做练习，相信你会进步的！';
+            }
+            
+            testResults = {
+                score: percentage,
+                rank,
+                desc,
+                singleCorrect,
+                singleTotal,
+                multipleCorrect,
+                multipleTotal,
+                wrongAnswers,
+                accuracy: Math.round(((singleCorrect + multipleCorrect) / (singleTotal + multipleTotal)) * 100),
+                totalQuestions: selectedQuestions.length
+            };
+        }
+
+        // 显示结果
+        function showResults() {
+            document.getElementById('quizPage').classList.add('hidden');
+            document.getElementById('resultPage').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = testResults.score;
+            document.getElementById('finalRank').textContent = testResults.rank;
+            document.getElementById('finalDesc').textContent = testResults.desc;
+            document.getElementById('singleScore').textContent = `${testResults.singleCorrect}/${testResults.singleTotal}`;
+            document.getElementById('multipleScore').textContent = `${testResults.multipleCorrect}/${testResults.multipleTotal}`;
+            document.getElementById('accuracyRate').textContent = `${testResults.accuracy}%`;
+        }
+
+        // 查看错题
+        function showWrongAnswers() {
+            document.getElementById('answersTitle').textContent = '❌ 错题详情（共' + testResults.wrongAnswers.length + '题）';
+            showAnswersDetail(testResults.wrongAnswers);
+        }
+
+        // 查看全部答案
+        function showAllAnswers() {
+            document.getElementById('answersTitle').textContent = '📋 全部答案解析';
+            const allWithAnswers = selectedQuestions.map((q, index) => ({
+                question: q,
+                index,
+                userAnswer: userAnswers[index] || [],
+                correctAnswer: q.answer
+            }));
+            showAnswersDetail(allWithAnswers);
+        }
+
+        // 显示答案详情
+        function showAnswersDetail(answerList) {
+            const container = document.getElementById('answersContainer');
+            let html = '';
+            
+            answerList.forEach((item, i) => {
+                const { question, index, userAnswer, correctAnswer } = item;
+                const typeClass = question.type === 'single' ? 'type-single' : 'type-multiple';
+                const typeText = question.type === 'single' ? '单选题' : '多选题';
+                const stars = '⭐'.repeat(question.difficulty);
+                
+                // 确保correctAnswer是数组（单选题的correctAnswer是数字）- 必须放在最前面！
+                const correctAnswerArray = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+                
+                // 判断是否答对
+                let isCorrect;
+                if (question.type === 'single') {
+                    isCorrect = userAnswer.length === 1 && userAnswer[0] === correctAnswer;
+                } else {
+                    const sortedUser = [...userAnswer].sort().join(',');
+                    const sortedCorrect = correctAnswerArray.sort().join(',');
+                    isCorrect = sortedUser === sortedCorrect;
+                }
+                
+                let optionsHtml = '';
+                question.options.forEach((option, optIndex) => {
+                    let statusClass = '';
+                    if (correctAnswerArray.includes(optIndex)) {
+                        statusClass = 'correct';
+                    } else if (userAnswer.includes(optIndex)) {
+                        statusClass = 'wrong';
+                    }
+                    
+                    const letter = String.fromCharCode(65 + optIndex);
+                    optionsHtml += `
+                        <div class="option-item ${statusClass}">
+                            <span class="option-text">${letter}. ${option}</span>
+                        </div>
+                    `;
+                });
+                
+                const userAnswerStr = userAnswer.map(i => String.fromCharCode(65 + i)).join(', ') || '未作答';
+                const correctAnswerStr = correctAnswerArray.map(i => String.fromCharCode(65 + i)).join(', ');
+                const badge = isCorrect ? 
+                    '<span class="result-badge badge-correct">✓ 答对</span>' : 
+                    '<span class="result-badge badge-wrong">✗ 答错</span>';
+                
+                html += `
+                    <div class="question-card card" style="padding: 20px;">
+                        <div class="question-info">
+                            <span class="question-type ${typeClass}">${typeText}</span>
+                            <span class="difficulty">${stars.split('').map(s => `<span class="star">${s}</span>`).join('')}</span>
+                            ${badge}
+                        </div>
+                        <div class="question-text" style="font-size: 16px;">${index + 1}. ${question.text}</div>
+                        <div class="options-list">
+                            ${optionsHtml}
+                        </div>
+                        <div style="margin-top: 15px; font-size: 14px;">
+                            <strong>你的答案：</strong> ${userAnswerStr}<br>
+                            <strong>正确答案：</strong> ${correctAnswerStr}
+                        </div>
+                        <div class="explanation">
+                            <div class="explanation-title">📝 解析</div>
+                            ${question.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('answersDetail').classList.remove('hidden');
+            document.getElementById('resultCard').classList.add('hidden');
+        }
+
+        // 隐藏答案
+        function hideAnswers() {
+            document.getElementById('answersDetail').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+        }
+
+        // 重新测试
+        function restartQuiz() {
+            currentUser = { name: '', experience: 0 };
+            selectedQuestions = [];
+            userAnswers = {};
+            currentQuestionIndex = 0;
+            testResults = null;
+            
+            document.getElementById('nickname').value = '';
+            document.getElementById('resultPage').classList.add('hidden');
+            document.getElementById('answersDetail').classList.add('hidden');
+            document.getElementById('welcomePage').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
