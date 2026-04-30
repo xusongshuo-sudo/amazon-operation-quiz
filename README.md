@@ -22,7 +22,7 @@
 
 ## 🚀 在线访问
 
-访问地址：https://yourusername.github.io/amazon-quiz/
+访问地址：https://xusongshup-sudo.github.io/amazon-quiz/
 
 ## 📊 能力评级
 
